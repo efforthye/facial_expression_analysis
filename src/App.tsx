@@ -69,9 +69,12 @@ const App: React.FC = () => {
           const context = canvasRef.current.getContext('2d');
           if (context) {
             context.clearRect(0, 0, displaySize.width, displaySize.height);
-            faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
+            // 퍼센트와 얼굴 박스 출력
+            // faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
+            // 얼굴 구조 마스크 출력
             faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
-            faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
+            // 각 표정 별 퍼센트 박스 출력
+            // faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
           }
 
           if (expressionsRef.current && detections.length > 0) {
@@ -150,7 +153,7 @@ const StyledCanvas = styled.canvas`
   height: 100%;
 `;
 
-// 감정 표현 텍스트 
+// 감정 표현 텍스트
 const ExpressionDiv = styled.div`
   position: absolute;
   top: -35px;
