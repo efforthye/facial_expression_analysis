@@ -1,6 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import * as faceapi from 'face-api.js';
 import '@tensorflow/tfjs-backend-webgl';
+import styled from 'styled-components';
+
+const expressionMapping: any = {
+  neutral: '무표정인 것 같아 보여요!',
+  happy: '행복하거나 기뻐 보여요!',
+  sad: '좀 슬퍼 보이네요...',
+  angry: '좀 화나 보여요!',
+  fearful: '좀 두려워 보여요..',
+  disgusted: '좀 혐오스러워 하는 것 같아요!',
+  surprised: '좀 놀라 보여요!'
+};
 
 const App: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -28,22 +39,31 @@ const App: React.FC = () => {
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
             videoRef.current.onloadedmetadata = () => {
-              videoRef.current?.play();
+              const playPromise = videoRef.current?.play();
+              if (playPromise !== undefined) {
+                playPromise.then(() => {
+                  console.log('Video playback started');
+                }).catch(error => {
+                  console.error('Error playing video:', error);
+                });
+              }
             };
-            console.log('Video started');
           }
         })
-        .catch(err => console.error('Error accessing webcam: ', err));
+        .catch(err => console.error('Error accessing webcam:', err));
     };
 
     const handleVideoPlay = () => {
       const intervalId = setInterval(async () => {
         if (videoRef.current && canvasRef.current) {
+          const displaySize = { width: videoRef.current.videoWidth, height: videoRef.current.videoHeight };
+          if (displaySize.width === 0 || displaySize.height === 0) {
+            return;
+          }
           const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
             .withFaceLandmarks()
             .withFaceExpressions();
 
-          const displaySize = { width: videoRef.current.width, height: videoRef.current.height };
           faceapi.matchDimensions(canvasRef.current, displaySize);
           const resizedDetections = faceapi.resizeResults(detections, displaySize);
           const context = canvasRef.current.getContext('2d');
@@ -56,8 +76,9 @@ const App: React.FC = () => {
 
           if (expressionsRef.current && detections.length > 0) {
             const { expressions }: any = detections[0];
-            const maxExpression = Object.keys(expressions).reduce((a, b) => expressions[a] > expressions[b] ? a : b);
-            expressionsRef.current.innerText = `Expression: ${maxExpression}`;
+            const maxExpression: any = Object.keys(expressions).reduce((a, b) => expressions[a] > expressions[b] ? a : b);
+            const translatedExpression: any = expressionMapping[maxExpression] || maxExpression;
+            expressionsRef.current.innerText = `지금은 ${translatedExpression}`;
           }
         }
       }, 1000); // 1초마다 분석
@@ -85,14 +106,58 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <div style={{ position: 'relative' }}>
-        <video ref={videoRef} autoPlay muted width="720" height="560" style={{ position: 'absolute' }} />
-        <canvas ref={canvasRef} width="720" height="560" style={{ position: 'absolute' }} />
-        <div ref={expressionsRef} style={{ position: 'absolute', top: 10, left: 10, color: 'white', backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '5px', borderRadius: '5px' }} />
-      </div>
-    </div>
+    <Container>
+      <VideoContainer>
+        <StyledVideo ref={videoRef} autoPlay muted />
+        <StyledCanvas ref={canvasRef} />
+        <ExpressionDiv ref={expressionsRef} />
+      </VideoContainer>
+    </Container>
   );
 };
 
 export default App;
+
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const VideoContainer = styled.div`
+  position: relative;
+  width: 720px;
+  height: 560px;
+`;
+
+const StyledVideo = styled.video`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+`;
+
+const StyledCanvas = styled.canvas`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+`;
+
+// 감정 표현 텍스트 
+const ExpressionDiv = styled.div`
+  position: absolute;
+  top: -35px;
+  left: 10px;
+  color: white;
+  background-color: rgb(255, 186, 10);
+  padding: 5px;
+  border-radius: 5px;
+  font-size: large;
+`;
