@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const OpenAITest: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
-  const apiKey = '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';
 
   const generateImages = async () => {
     console.log('이미지생성하쟈 ㅇㅅㅇ');
@@ -17,7 +16,7 @@ const OpenAITest: React.FC = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
+            'Authorization': `Bearer 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`,
             // 'Content-Type': 'application/json'
           }
         }
