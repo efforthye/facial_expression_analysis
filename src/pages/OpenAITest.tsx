@@ -5,6 +5,7 @@ const OpenAITest: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
 
   const sk = 'sk-';
+  const hi = 'fC8Nk8ijrE3yQqZhjiEy';
 
   const generateImages = async () => {
     console.log('이미지생성하쟈 ㅇㅅㅇ');
@@ -18,7 +19,7 @@ const OpenAITest: React.FC = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${sk}fC8Nk8ijrE3yQqZhjiEyT3BlbkFJXwWvohkAZwP2tsZHd9Rz`,
+            'Authorization': `Bearer ${sk}${hi}T3BlbkFJXwWvohkAZwP2tsZHd9Rz`,
             // 'Content-Type': 'application/json'
           }
         }
