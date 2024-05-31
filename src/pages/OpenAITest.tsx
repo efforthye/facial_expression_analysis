@@ -4,12 +4,9 @@ import axios from 'axios';
 const OpenAITest: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
 
-  const sk = 'sk-';
-  const hi = 'fC8Nk8ijrE3yQqZhjiEy';
-  const hi2 = 'XwWvohkAZwP2tsZ';
-
   const generateImages = async () => {
     console.log('이미지생성하쟈 ㅇㅅㅇ');
+    const key = process.env.REACT_APP_OPENAI_KEY;
     try {
       const response = await axios.post(
         'https://api.openai.com/v1/images/generations',
@@ -20,7 +17,7 @@ const OpenAITest: React.FC = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${sk}${hi}T3BlbkFJ${hi2}Hd9Rz`,
+            'Authorization': `Bearer ${key}`,
             // 'Content-Type': 'application/json'
           }
         }
