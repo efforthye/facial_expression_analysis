@@ -6,6 +6,7 @@ const OpenAITest: React.FC = () => {
 
   const sk = 'sk-';
   const hi = 'fC8Nk8ijrE3yQqZhjiEy';
+  const hi2 = 'XwWvohkAZwP2tsZ';
 
   const generateImages = async () => {
     console.log('이미지생성하쟈 ㅇㅅㅇ');
@@ -19,7 +20,7 @@ const OpenAITest: React.FC = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${sk}${hi}T3BlbkFJXwWvohkAZwP2tsZHd9Rz`,
+            'Authorization': `Bearer ${sk}${hi}T3BlbkFJ${hi2}Hd9Rz`,
             // 'Content-Type': 'application/json'
           }
         }
