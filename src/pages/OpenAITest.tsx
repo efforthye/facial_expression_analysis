@@ -19,6 +19,7 @@ const OpenAITest: React.FC = () => {
     console.log('이미지 생성 시작 ㅇㅅㅇ');
     const key = process.env.REACT_APP_OPENAI_KEY;
     const randomExpressions = getRandomExpressions();
+    console.log({randomExpressions});
 
     const makeRequest = async (expression: string, attempt = 0): Promise<string | null> => {
       try {
@@ -39,7 +40,7 @@ const OpenAITest: React.FC = () => {
       } catch (error) {
         if (attempt < 3) {
           console.error(`Error generating image (attempt ${attempt + 1}):`, error);
-          await sleep(4000); // 4초 지연
+          await sleep(7000); // 7초 지연
           return makeRequest(expression, attempt + 1);
         } else {
           console.error(`Failed to generate image after ${attempt + 1} attempts:`, error);
