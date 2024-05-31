@@ -34,7 +34,6 @@ const OpenAITest: React.FC = () => {
           {
             headers: {
               'Authorization': `Bearer ${key}`,
-              // 'Content-Type': 'application/json'
             }
           }
         );
