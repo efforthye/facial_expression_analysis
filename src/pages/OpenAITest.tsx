@@ -20,14 +20,12 @@ const OpenAITest: React.FC = () => {
     const key = process.env.REACT_APP_OPENAI_KEY;
     const randomExpressions = getRandomExpressions();
 
-    try {
-      console.log({randomExpressions});
-      const imagePromises = randomExpressions.map(async (expression, index) => {
-        await sleep(index * 1000); // 각 요청 간 1초 지연
-        return axios.post(
+    const makeRequest = async (expression: string, attempt = 0): Promise<string | null> => {
+      try {
+        const response = await axios.post(
           'https://api.openai.com/v1/images/generations',
           {
-            "prompt": `a portrait of a girl looking ${expression}`,
+            "prompt": `a portrait of a beautiful korean girl looking ${expression}`,
             "n": 1,
             "size": "1024x1024"
           },
@@ -37,16 +35,30 @@ const OpenAITest: React.FC = () => {
             }
           }
         );
-      });
+        return response?.data?.data[0]?.url || null;
+      } catch (error) {
+        if (attempt < 3) {
+          console.error(`Error generating image (attempt ${attempt + 1}):`, error);
+          await sleep(4000); // 4초 지연
+          return makeRequest(expression, attempt + 1);
+        } else {
+          console.error(`Failed to generate image after ${attempt + 1} attempts:`, error);
+          return null;
+        }
+      }
+    };
 
-      const responses = await Promise.all(imagePromises);
-      const imageUrls = responses.map(response => response?.data?.data[0]?.url);
-      console.log({ imageUrls });
-      setImages(imageUrls);
+    try {
+      const imagePromises = randomExpressions.map((expression, index) => 
+        sleep(index * 1000).then(() => makeRequest(expression))
+      );
+
+      const imageUrls = await Promise.all(imagePromises);
+      const filteredUrls = imageUrls.filter(url => url !== null) as string[];
+      console.log({ filteredUrls });
+      setImages(filteredUrls);
     } catch (error) {
-      console.error('Error generating images:', error);
-      // 재시도 로직 추가
-      setTimeout(generateImages, 5000);
+      console.error('Unexpected error:', error);
     }
   };
 
