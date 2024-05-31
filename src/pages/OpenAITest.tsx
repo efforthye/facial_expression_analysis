@@ -11,7 +11,6 @@ const OpenAITest: React.FC = () => {
       const response = await axios.post(
         'https://api.openai.com/v1/images/generations',
         {
-          // "model": "dall-e-3",
           "prompt": "a white siamese cat",
           "n": 1,
           "size": "1024x1024"
