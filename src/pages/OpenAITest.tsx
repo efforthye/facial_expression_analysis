@@ -4,6 +4,8 @@ import axios from 'axios';
 const OpenAITest: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
 
+  const sk = 'sk-';
+
   const generateImages = async () => {
     console.log('이미지생성하쟈 ㅇㅅㅇ');
     try {
@@ -16,7 +18,7 @@ const OpenAITest: React.FC = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer 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`,
+            'Authorization': `Bearer ${sk}fC8Nk8ijrE3yQqZhjiEyT3BlbkFJXwWvohkAZwP2tsZHd9Rz`,
             // 'Content-Type': 'application/json'
           }
         }
