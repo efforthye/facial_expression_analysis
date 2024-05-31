@@ -21,12 +21,13 @@ const OpenAITest: React.FC = () => {
     const randomExpressions = getRandomExpressions();
 
     try {
+      console.log({randomExpressions});
       const imagePromises = randomExpressions.map(async (expression, index) => {
         await sleep(index * 1000); // 각 요청 간 1초 지연
         return axios.post(
           'https://api.openai.com/v1/images/generations',
           {
-            "prompt": `a portrait of a person looking ${expression}`,
+            "prompt": `a portrait of a girl looking ${expression}`,
             "n": 1,
             "size": "1024x1024"
           },
